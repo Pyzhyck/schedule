@@ -43,17 +43,33 @@ export default {
   },
   data() {
     return {
-      colsToHighlight: ''
+      colsToHighlight: '',
+      fillDays: []
     }
   },
   created() {
     moment.locale('uk');
   },
   mounted() {
-    for(let row = 0; row < this.team.length; row++) {
-      for(let col = row; col < this.daysInMonth; col+=this.team.length) {
-        if(this.$refs.col[col + row * this.daysInMonth]) {
-          this.$refs.col[col + row * this.daysInMonth].style.backgroundColor = "#7f8c8d";
+    // Getting weekends
+    for(let day = 1; day <= this.daysInMonth; day++) {
+      if(this.isWeekend(day)) {
+        this.fillDays.push(day);
+      }
+    }
+    // Fill days for members
+    let startMember = 0;
+    for(let day = 0; day < this.daysInMonth; day++) {
+      for(let member = startMember; member <= this.team.length; member++) {
+        let currentCell = (day + (member * this.daysInMonth));
+        if(this.fillDays.indexOf(day+1) > -1) {
+          if(member == this.team.length) member = 0;
+          startMember = member;
+          break;
+        }
+        else {
+          this.fillDays.push(day+1);
+          this.$refs.col[currentCell].style.backgroundColor = "#7f8c8d";
         }
       }
     }
@@ -64,8 +80,7 @@ export default {
       return moment().format('MMMM');
     },
     daysInMonth() {
-      this.cols = moment().daysInMonth();
-      return this.cols
+      return moment().daysInMonth();;
     },
     sortedTeam() {
       return this.team.sort((a, b) => a.name.localeCompare(b.name));
@@ -77,7 +92,7 @@ export default {
   methods: {
     isWeekend(day) {
       let weekday = moment().day(day).format('ddd');
-      if(weekday == 'нд' || weekday == 'сб') return true;
+      if((weekday == 'нд' || weekday == 'сб')) return true;
       return false;
     },
     setHighlightCols(day) {
@@ -180,5 +195,14 @@ h5 {
 }
 h6 {
   font-size: 0.5rem;
+}
+
+@media screen and (max-width: 991.5px) {
+  h3 {
+    font-size: 1.5rem;
+  }
+  h5 {
+    font-size: .8rem;
+  }
 }
 </style>
