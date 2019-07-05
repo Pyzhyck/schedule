@@ -2,6 +2,7 @@
   <div class="schedule">
     <div class="title">
       <h3>Графік винесення сміття на <span>{{month}}</span></h3>
+      <h5>Сьогодні черговий: {{todayMember}}</h5>
     </div>
     <div class="table" :class="colsToHighlight" @mouseout="setHighlightCols()">
       <div class="row">
@@ -16,7 +17,7 @@
           <h5>{{day}}</h5>
         </div>
       </div>
-      <div class="row" v-for="(person, key) in sortedTeam" :key="key">
+      <div class="row" v-for="(person, key) in sortedTeam" :key="key" ref="row">
         <div class="col col--person">
           <h5>{{person.name}}</h5>
         </div>
@@ -44,7 +45,8 @@ export default {
   data() {
     return {
       colsToHighlight: '',
-      fillDays: []
+      fillDays: [],
+      todayMember: undefined
     }
   },
   created() {
@@ -70,6 +72,11 @@ export default {
         else {
           this.fillDays.push(day+1);
           this.$refs.col[currentCell].style.backgroundColor = "#7f8c8d";
+          if(day+1 == this.currentDay) {
+            this.todayMember = this.team[member].name;
+            this.$refs['row'][member].style.backgroundColor = "#27ae60";
+            this.$refs['row'][member].style.color = "#2c3e50";
+          }
         }
       }
     }
