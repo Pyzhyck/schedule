@@ -93,7 +93,7 @@ export default {
       return this.team.sort((a, b) => a.name.localeCompare(b.name));
     },
     currentDay() {
-      return moment().day();
+      return moment().date();
     }
   },
   methods: {
